@@ -16,6 +16,7 @@
             _context=context;
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
         {
             var result=await _context.Users.ToListAsync();
