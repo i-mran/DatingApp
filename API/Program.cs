@@ -1,6 +1,7 @@
         using System.Text;
         using Api.Data;
-        using API.Extensions;
+using Api.Middleware;
+using API.Extensions;
         using API.Interfaces;
         using API.Services;
         using DatingApp;
@@ -19,7 +20,7 @@
                 builder.Services.AddIdentityServices(builder.Configuration);
                 
                 var app = builder.Build();
-
+                app.UseMiddleware<ExceptionMiddleware>();
                 // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
                 {

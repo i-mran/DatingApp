@@ -1,0 +1,14 @@
+<h4>Internal Server Error-Refreshing the page will solve the error</h4>
+<ng-container *ngIf="error">
+    <h5 class="text-danger">{{error?.message}}</h5>
+    <p class="font-weight-bold">Note:If you are seeing this angular is not to be blamed</p>
+    
+    <p>What to do next</p>
+    <ol>
+        <li>Open the browser's developer tools (F12)</li>
+        <li>Check the Network tab for any failed requests</li>
+        <li>Look for any error messages in the Console tab</li> 
+    </ol>
+    <p style="font-weight:bold">Follow is  the stack trace</p>
+    <code class="mt-5" style="background-color: whitesmoke;">{{error?.details}}</code>
+</ng-container>
