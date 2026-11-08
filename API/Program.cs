@@ -1,6 +1,7 @@
         using System.Text;
         using Api.Data;
 using Api.Middleware;
+using API.Data;
 using API.Extensions;
         using API.Interfaces;
         using API.Services;
@@ -32,28 +33,20 @@ using API.Extensions;
         app.UseAuthentication();
         app.UseAuthorization();
             app.MapControllers();
-                var summaries = new[]
-                {
-                    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-                };
-
-                app.MapGet("/weatherforecast", () =>
-                {
-                    var forecast =  Enumerable.Range(1, 5).Select(index =>
-                        new WeatherForecast
-                        (
-                            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                            Random.Shared.Next(-20, 55),
-                            summaries[Random.Shared.Next(summaries.Length)]
-                        ))
-                        .ToArray();
-                    return forecast;
-                })
-                .WithName("GetWeatherForecast");
+            using var scope=app.Services.CreateScope();
+            var services=scope.ServiceProvider;
+try
+{
+    var context=services.GetRequiredService<DataContext>();
+    await context.Database.MigrateAsync();
+    await Seed.SeedUsers(context);
+}
+catch(Exception ex)
+{
+    var logger=services.GetService<ILogger<Program>>();
+    logger.LogError(ex,"An error Occured During Migration");
+}
+              
 
                 app.Run();
 
-                record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-                {
-                    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-                }
